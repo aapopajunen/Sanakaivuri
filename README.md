@@ -72,9 +72,9 @@ kaivuri.bat 11.4.2024 --solve-mode=all
 ```
 
 ## Model
-Each grid cell is assigned a unique id from $C = \{ 1,2,\ldots,30 \}$. Then, each word $W_i \subseteq C$ present in the grid can be represented as a subset  of the cell ids. $W = \{W_1, W_2, \ldots, W_N\}$ is the set of all possible words in the grid. Notice that the we don't care about the letters, only about the cells belonging to a word. Generation of $W$ is discussed later.
+Each grid cell is assigned a unique id from $`C = \{ 1,2,\ldots,30 \}`$. Then, each word $W_i \subseteq C$ present in the grid can be represented as a subset of the cell ids. Let $`W = \{ W_1, W_2, \ldots, W_N \}`$ be the set of all words present in the grid. Notice that during solving, we don't care about the letters that form a word, only about the cells, i.e. the spatial information.
 
-A solution $S \subseteq W$ to the puzzle is then a subset of words that 1) don't overlap and 2) cover each cell in the grid. In other words, the intersection of words $W_i \in S$ is empty and the union of words $W_i \in S$ is equal to $C$:
+A solution $S \subseteq W$ to the puzzle is then a subset of words that 1) don't overlap and 2) cover each cell in the grid. In other words, the intersection of words $W_i \in S$ should be empty and the union of words $W_i \in S$ should be equal to $C$:
 ```math
 \bigcap_{S_i \in S} S_i = \varnothing \text{ and }
 \bigcup_{S_i \in S} S_i = C
