@@ -83,7 +83,7 @@ A solution $S \subseteq W$ to the puzzle is then a subset of words that 1) don't
 The problem can be modeled as a [Boolean satisfiability problem](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) (SAT).
 
 ### SAT
-Variables $w_1,w_2,\ldots,w_N$ and $c_1,c_2,\ldots,c_{30}$ are introduced for the SAT problem. Here, $w_i$ stands for "$W_i$ is present in the solution", and $c_i$ stands for "cell $i$ is covered by some word". The following clauses should be satisfied in order to find a solution:
+Variables $w_1,w_2,\ldots,w_N$ and $c_1,c_2,\ldots,c_{30}$ are introduced for the SAT problem. Here, $w_i$ stands for "word $W_i$ is present in the solution", and $c_i$ stands for "cell $i$ is covered by some word". The following clauses should be satisfied in order to find a solution:
 
 1. Every cell is covered by some word:
 ```math
