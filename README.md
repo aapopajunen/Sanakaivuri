@@ -72,19 +72,28 @@ kaivuri.bat 11.4.2024 --solve-mode=all
 ```
 
 ## Model
-Each grid cell is assigned a unique id from $`C = \{ 1,2,\ldots,30 \}`$. Then, each word $W_i \subseteq C$ present in the grid can be represented as a subset of the cell ids. Let $`W = \{ W_1, W_2, \ldots, W_N \}`$ be the set of all words present in the grid. Notice that during solving, we don't care about the letters that form a word, only about the cells, i.e. the spatial information.
 
-A solution $S \subseteq W$ to the puzzle is then a subset of words that 1) don't overlap and 2) cover each cell in the grid. In other words, the intersection of words $W_i \in S$ should be empty and the union of words $W_i \in S$ should be equal to $C$.
+Each grid cell is assigned a unique ID from the set $`C = \{ 1, 2, \ldots, 30 \}`$. Then, each word $W_i \subseteq C$
+found within the grid can be represented as a subset of cell IDs. Let $`W = \{ W_1, W_2, \ldots, W_N \}`$ denote the
+set of all words present in the grid. It's worth noting that during solving, we're solely concerned with the
+spatial arrangement of cells, disregarding the letters forming each word.
+
+A solution $S \subseteq W$ to the puzzle consists of a subset of words that satisfy two conditions: 1) they don't
+overlap, and 2) they collectively cover each cell in the grid. In other words, the intersection of words $W_i \in S$
+should be empty, and the union of words $W_i \in S$ should equal $C$:
 ```math
 \bigcap_{W_i \in S} W_i = \varnothing \text{ and }
 \bigcup_{W_i \in S} W_i = C
 ```
-Hence, the problem is equivalent to the [Exact cover problem](https://en.wikipedia.org/wiki/Exact_cover).
 
-The problem can be further reduced to a [Boolean satisfiability problem](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) (SAT) and solved using a SAT solver.
+Thus, the problem is essentially equivalent to the [Exact cover problem](https://en.wikipedia.org/wiki/Exact_cover),
+which can be further reduced to the [Boolean satisfiability problem](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) (SAT)
+and subsequently solved using a SAT solver.
 
 ### Reduction to SAT
-Variables $w_1,w_2,\ldots,w_N$ and $c_1,c_2,\ldots,c_{30}$ are introduced for the SAT problem. Here, $w_i$ stands for "word $W_i$ is present in the solution", and $c_i$ stands for "cell $i$ is covered by some word". A solution to the puzzle satisfies the following clauses:
+Variables $w_1,w_2,\ldots,w_N$ and $c_1,c_2,\ldots,c_{30}$ are introduced for the SAT problem. Here, $w_i$
+stands for "word $W_i$ is present in the solution", and $c_i$ stands for "cell $i$ is covered by some word".
+A solution to the puzzle satisfies the following clauses:
 
 1. Every cell is covered by some word:
 ```math
@@ -107,3 +116,5 @@ Variables $w_1,w_2,\ldots,w_N$ and $c_1,c_2,\ldots,c_{30}$ are introduced for th
 ```
 
 Final step is to define the clauses in [conjunctive normal form](https://en.wikipedia.org/wiki/Conjunctive_normal_form) (CNF). The formula in CNF form is then fed to a SAT-solver. I'm using [PySAT](https://pysathq.github.io/) for solving the puzzle.
+
+Another approach would be to solve the problem using the [Dancing Links](https://en.wikipedia.org/wiki/Dancing_Links) algorithm.
