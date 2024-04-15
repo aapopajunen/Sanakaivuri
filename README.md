@@ -1,7 +1,7 @@
-# Sanamainari
+# Sanamkaivuri
 *Ruining the fun of puzzle solving!*
 
-Sanamainari is a solver for the puzzle [**Sanalouhos**](https://sanalouhos.datadesk.hs.fi/) published daily by [Helsingin Sanomat](https://hs.fi).
+Sanamkaivuri is a solver for the puzzle [**Sanalouhos**](https://sanalouhos.datadesk.hs.fi/) published daily by [Helsingin Sanomat](https://hs.fi).
 
 
 In Sanalouhos you're given 6x5 grid of letters. The task is to connect cells and find words in the grid. Words can be formed by connecting cells either diagonally, vertically or horizontally. Below is a puzzle and an example solution.
@@ -20,7 +20,7 @@ O S I N I | . . . . . | . . . . . | . . . . . | . . . . . | O S I N I
 ## Usage
 ### Solving a puzzle
 ```
-> .\mainari.bat 1.4.2024
+> .\kaivuri.bat 1.4.2024
 
 Puzzle:
 T A T L E 
@@ -45,7 +45,7 @@ The app will fetch the puzzle from the Helsingin Sanomat api and solve the puzzl
 
 Alternatively the puzzle letters can be given as a string to the solver:
 ```
-> .\mainari.bat PELLEHÄLLIYHÄETIKMYTTUTÄMYKSET
+> .\kaivuri.bat PELLEHÄLLIYHÄETIKMYTTUTÄMYKSET
 Puzzle:
 P E L L E 
 H Ä L L I
@@ -68,7 +68,7 @@ p e l l e    . . . . .    . . . . .    . . . . .
 
 The supported solve modes are `least_words`, `most_words`, `any` and `all`. The desired solve mode can be defined using the `--solve-mode` parameter:
 ```
-mainari.bat 11.4.2024 --solve-mode=all
+kaivuri.bat 11.4.2024 --solve-mode=all
 ```
 
 ## Model

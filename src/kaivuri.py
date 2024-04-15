@@ -15,7 +15,7 @@ class Grid:
     return "".join([self.letters[self.cols * y + x] for x,y in path])
 
   
-class Mainari:
+class Kaivuri:
   def __init__(self, puzzle, dictionary = Dictionary("finnish_dictionary.txt")):
     self.dictionary = dictionary
     self.grid = Grid(puzzle)
