@@ -74,16 +74,17 @@ kaivuri.bat 11.4.2024 --solve-mode=all
 ## Model
 Each grid cell is assigned a unique id from $`C = \{ 1,2,\ldots,30 \}`$. Then, each word $W_i \subseteq C$ present in the grid can be represented as a subset of the cell ids. Let $`W = \{ W_1, W_2, \ldots, W_N \}`$ be the set of all words present in the grid. Notice that during solving, we don't care about the letters that form a word, only about the cells, i.e. the spatial information.
 
-A solution $S \subseteq W$ to the puzzle is then a subset of words that 1) don't overlap and 2) cover each cell in the grid. In other words, the intersection of words $W_i \in S$ should be empty and the union of words $W_i \in S$ should be equal to $C$:
+A solution $S \subseteq W$ to the puzzle is then a subset of words that 1) don't overlap and 2) cover each cell in the grid. In other words, the intersection of words $W_i \in S$ should be empty and the union of words $W_i \in S$ should be equal to $C$.
 ```math
-\bigcap_{S_i \in S} S_i = \varnothing \text{ and }
-\bigcup_{S_i \in S} S_i = C
+\bigcap_{W_i \in S} W_i = \varnothing \text{ and }
+\bigcup_{W_i \in S} W_i = C
 ```
+Hence, the problem is equivalent to the [Exact cover problem](https://en.wikipedia.org/wiki/Exact_cover).
 
-The problem can be modeled as a [Boolean satisfiability problem](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) (SAT).
+The problem can be further reduced to a [Boolean satisfiability problem](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) (SAT) and solved using a SAT solver.
 
-### SAT
-Variables $w_1,w_2,\ldots,w_N$ and $c_1,c_2,\ldots,c_{30}$ are introduced for the SAT problem. Here, $w_i$ stands for "word $W_i$ is present in the solution", and $c_i$ stands for "cell $i$ is covered by some word". The following clauses should be satisfied in order to find a solution:
+### Reduction to SAT
+Variables $w_1,w_2,\ldots,w_N$ and $c_1,c_2,\ldots,c_{30}$ are introduced for the SAT problem. Here, $w_i$ stands for "word $W_i$ is present in the solution", and $c_i$ stands for "cell $i$ is covered by some word". A solution to the puzzle satisfies the following clauses:
 
 1. Every cell is covered by some word:
 ```math
