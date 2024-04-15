@@ -1,7 +1,7 @@
-# Sanamkaivuri
+# Sanakaivuri
 *Ruining the fun of puzzle solving!*
 
-Sanamkaivuri is a solver for the puzzle [**Sanalouhos**](https://sanalouhos.datadesk.hs.fi/) published daily by [Helsingin Sanomat](https://hs.fi).
+Sanakaivuri is a solver for the puzzle [**Sanalouhos**](https://sanalouhos.datadesk.hs.fi/) published daily by [Helsingin Sanomat](https://hs.fi).
 
 
 In Sanalouhos you're given 6x5 grid of letters. The task is to connect cells and find words in the grid. Words can be formed by connecting cells either diagonally, vertically or horizontally. Below is a puzzle and an example solution.
