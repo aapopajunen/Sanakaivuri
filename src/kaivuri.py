@@ -1,6 +1,18 @@
 from dictionary import Dictionary
 from pysat.formula import CNF
 from pysat.solvers import Solver
+import dlx
+import time
+
+
+def custom_timer(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        return result, execution_time
+    return wrapper
 
 
 class Grid:
@@ -20,7 +32,26 @@ class Kaivuri:
     self.dictionary = dictionary
     self.grid = Grid(puzzle)
     self.init_W()
-    self.init_cnf()
+
+
+  def print_banner(self):
+    words = set()
+    for w in self.W.values():
+      for wi in w:
+        words.add(wi)
+
+    print(f"""
+┏┓      ┓   •      •
+┗┓┏┓┏┓┏┓┃┏┏┓┓┓┏┓┏┏┓┓
+┗┛┗┻┛┗┗┻┛┗┗┻┗┗┛┗┻┛ ┗
+""")
+
+    
+    self.print_problem()
+    print()
+    print(f"""                     
+Number of unique words: {len(words)}
+Number of tiles       : {len(self.W)}""")
 
   def init_W(self):
     self.W = {}
@@ -49,7 +80,7 @@ class Kaivuri:
       init_W_inner([ci])
 
 
-  def init_cnf(self):
+  def build_cnf(self):
     def vars():
       num = 1
       while True:
@@ -87,36 +118,23 @@ class Kaivuri:
       for Wj in W2W[Wi]:
         clauses.append([-w[Wi], -w[Wj]]) # (!wi | !wj)
 
-    self.cnf = CNF(from_clauses=clauses)
+    return CNF(from_clauses=clauses)
 
 
-  def get_solutions(self, models):
+  def solve_all(self, solver):
     solutions = []
-    for model in models:
-      solution = {}
-      for var in model:
-        if var > 0 and var <= len(self.W):
-          wi = var
-          Wi = self.w2W[wi]
-          solution[Wi] = self.W[Wi]
+    for i, solution in enumerate(solver):
+      print(f"Number of solutions   : {i}\r", end='', flush=True)
       solutions.append(solution)
+    print("")
 
     solutions = sorted(solutions, key=lambda solution: len(solution))
 
     return solutions
 
 
-  def solve_all(self, solver):
-    models = []
-    for i, model in enumerate(solver.enum_models()):
-      print(f"\r{i} solutions found...", end='', flush=True)
-      models.append(model)
-    print("")
-    return self.get_solutions(models)
-
-
   def solve_any(self, solver):
-    return self.get_solutions([solver.get_model()])
+    return [next(solver)]
 
 
   def solve_least_words(self, solver):
@@ -127,28 +145,81 @@ class Kaivuri:
     return self.solve_all(solver)[-1:]
 
 
-  def solve(self, mode="least_words"):
-    with Solver(bootstrap_with=self.cnf) as solver:
-      if not solver.solve():
-        return []
+  def get_algx_solver(self):
+    # Reduce to exact cover problem
+    U = list(self.grid.C.keys())
+    S = list(self.W.keys())
 
-      if mode == "all":
-        return self.solve_all(solver)
-      if mode == "any":
-        print("Solving for any solution...")
-        return self.solve_any(solver)
-      if mode == "least_words":
-        print("Solving for least words...")
-        return self.solve_least_words(solver)
-      if mode == "most_words":
-        print("Solving for most words...")
-        return self.solve_most_words(solver)
-      
+    # Solve ECP
+    for ecp_solution in dlx.solve_algx(U, S):
+      solution = {}
+      for i in ecp_solution:
+        solution[S[i]] = self.W[S[i]]
+      yield solution
+
+
+  def get_dlx_solver(self):
+    # Reduce to exact cover problem
+    U = list(self.grid.C.keys())
+    S = list(self.W.keys())
+
+    # Solve ECP
+    for ecp_solution in dlx.solve_dlx(U, S):
+      solution = {}
+      for i in ecp_solution:
+        solution[S[i]] = self.W[S[i]]
+      yield solution
+
+
+  def get_sat_solver(self):
+    # Reduce to CNF-SAT
+    cnf = self.build_cnf()
+
+    # Solve SAT
+    with Solver(bootstrap_with=cnf) as solver:
+      solver.solve()
+      for model in solver.enum_models():
+        solution = {}
+        for var in model:
+          if var > 0 and var <= len(self.W):
+            wi = var
+            Wi = self.w2W[wi]
+            solution[Wi] = self.W[Wi]
+        yield solution
+
+
+  def get_solver(self, solver_type):
+    if solver_type == "algx":
+      return self.get_algx_solver()
+    if solver_type == "dlx":
+      print("dlx selected")
+      return self.get_dlx_solver()
+    else:
+      return self.get_sat_solver()
+
+
+  @custom_timer
+  def solve(self, solver_type="algx", mode="least_words"):
+    solver = self.get_solver(solver_type)
+
+    if mode == "all":
+      return self.solve_all(solver)
+    if mode == "any":
+      # print("Solving for any solution...")
+      return self.solve_any(solver)
+    if mode == "least_words":
+      # print("Solving for least words...")
+      return self.solve_least_words(solver)
+    if mode == "most_words":
+      # print("Solving for most words...")
+      return self.solve_most_words(solver)
+    
 
   def print_problem(self):
     for y in range(self.grid.rows):
+      print("   ", end="")
       for x in range(self.grid.cols):
-        print(f'{self.grid.C[(x,y)].upper()} ', end="")
+        print(f'{self.grid.C[(x,y)].upper()}  ', end="")
       print("")
 
 
