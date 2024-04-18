@@ -192,7 +192,6 @@ Number of tiles       : {len(self.W)}""")
     if solver_type == "algx":
       return self.get_algx_solver()
     if solver_type == "dlx":
-      print("dlx selected")
       return self.get_dlx_solver()
     else:
       return self.get_sat_solver()
