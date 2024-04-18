@@ -83,8 +83,6 @@ mätky        kituset      hyhmettyä    pelleillä
 y k . . .    . . s e t    . . . . .    . . . . .
 ```
 
-The supported solve modes are `least_words`, `most_words`, `any` and `all`. Additionally, the tool provides three different solvers: `algx`, `dlg` and `sat`. The desired solve mode and solver can be defined using the `--solve-mode` and `--solver` parameters:
-
 The tool supports four solve modes: `least_words`, `most_words`, `any`, and `all`. Additionally, it
 offers three solvers: `algx`, `dlg`, and `sat`. You can specify the desired solve mode and solver
 using the `--solve-mode` and `--solver` parameters, like this:
