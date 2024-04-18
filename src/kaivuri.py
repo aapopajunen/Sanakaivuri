@@ -124,7 +124,7 @@ Number of tiles       : {len(self.W)}""")
   def solve_all(self, solver):
     solutions = []
     for i, solution in enumerate(solver):
-      print(f"Number of solutions   : {i}\r", end='', flush=True)
+      print(f"Number of solutions   : {i + 1}\r", end='', flush=True)
       solutions.append(solution)
     print("")
 
