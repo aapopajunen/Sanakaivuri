@@ -84,7 +84,7 @@ y k . . .    . . s e t    . . . . .    . . . . .
 ```
 
 The tool supports four solve modes: `least_words`, `most_words`, `any`, and `all`. Additionally, it
-offers three solvers: `algx`, `dlg`, and `sat`. You can specify the desired solve mode and solver
+offers three solvers: `algx`, `dlg`, `sat` and `cdlx`. You can specify the desired solve mode and solver
 using the `--solve-mode` and `--solver` parameters, like this:
 ```
 kaivuri.bat 11.4.2024 --solve-mode=all --solver=sat
@@ -107,7 +107,7 @@ should be empty, and the union of words $W_i \in S$ should equal $C$:
 ```
 Hence, the problem is equivalent to the [Exact cover problem](https://en.wikipedia.org/wiki/Exact_cover).
 
-The solvers `algx` and `dlx` directly solve the exact cover problem. In contrast, the `sat` solver first
+The solvers `algx`, `dlx` and `cdlx` directly solve the exact cover problem. In contrast, the `sat` solver first
 transforms the problem into a Boolean satisfiability problem [Boolean satisfiability problem](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem) (SAT)
 before solving it. Details of this transformation are discussed below.
 
