@@ -1,1 +1,1 @@
-@py.exe src/main.py %*
+@python.exe src/main.py %*

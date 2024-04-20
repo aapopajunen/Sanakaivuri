@@ -3,6 +3,7 @@ from pysat.formula import CNF
 from pysat.solvers import Solver
 import dlx
 import time
+import cdlx
 
 
 def custom_timer(func):
@@ -25,6 +26,9 @@ class Grid:
 
   def get_word(self, path):
     return "".join([self.letters[self.cols * y + x] for x,y in path])
+  
+  def get_idx(self, coord):
+    return coord[1] * self.cols + coord[0]
 
   
 class Kaivuri:
@@ -52,6 +56,7 @@ class Kaivuri:
     print(f"""                     
 Number of unique words: {len(words)}
 Number of tiles       : {len(self.W)}""")
+
 
   def init_W(self):
     self.W = {}
@@ -145,6 +150,21 @@ Number of tiles       : {len(self.W)}""")
     return self.solve_all(solver)[-1:]
 
 
+  def get_cdlx_solver(self):
+    # Reduce to exact cover problem
+    U = list(self.grid.C.keys())
+    S = list(self.W.keys())
+    
+    Ui = list(map(lambda c: self.grid.get_idx(c), U))
+    Si = list(map(lambda si: list(map(lambda s: self.grid.get_idx(s), si)), S))
+
+    for cdlx_solution in cdlx.solve_cdlx(Ui, Si):
+      solution = {}
+      for i in cdlx_solution:
+        solution[S[i]] = self.W[S[i]]
+      yield solution
+
+
   def get_algx_solver(self):
     # Reduce to exact cover problem
     U = list(self.grid.C.keys())
@@ -193,6 +213,8 @@ Number of tiles       : {len(self.W)}""")
       return self.get_algx_solver()
     if solver_type == "dlx":
       return self.get_dlx_solver()
+    if solver_type == "cdlx":
+      return self.get_cdlx_solver()
     else:
       return self.get_sat_solver()
 
@@ -204,13 +226,10 @@ Number of tiles       : {len(self.W)}""")
     if mode == "all":
       return self.solve_all(solver)
     if mode == "any":
-      # print("Solving for any solution...")
       return self.solve_any(solver)
     if mode == "least_words":
-      # print("Solving for least words...")
       return self.solve_least_words(solver)
     if mode == "most_words":
-      # print("Solving for most words...")
       return self.solve_most_words(solver)
     
 
